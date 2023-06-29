@@ -17,7 +17,8 @@ router.post('/ping', async (ctx, next) => {
       message: `connection elasticsearch success, result: ${res}`
     }
   } catch(err) {
-    ctx.throw(err, 'connection elasticsearch failed!!!')
+    console.log(err)
+    // ctx.throw(err, 'connection elasticsearch failed!!!')
   }
 })
 

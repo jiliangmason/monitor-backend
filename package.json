@@ -4,9 +4,9 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "export NODE_ENV=development node index.js",
-    "dev": "./node_modules/.bin/nodemon index.js",
-    "prd": "export NODE_ENV=production pm2 start index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "prd": "pm2 start index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
