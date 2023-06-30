@@ -1,6 +1,6 @@
 FROM node:14
 
-WORKDIR /app
+WORKDIR /app/consume-server
 
 RUN npm install -g nodemon
 
@@ -10,7 +10,7 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 8090
+EXPOSE 8091
 
 CMD [ "nodemon", "index.js" ]
 

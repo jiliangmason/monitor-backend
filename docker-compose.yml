@@ -10,16 +10,45 @@ networks:
     driver: bridge
 
 services:
-  node:
-    container_name: node
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.12-management
     restart: always
-    build: .
+    hostname: rabbitmq_host
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - elasticnetwork 
+  
+  api:
+    container_name: api
+    restart: always
+    build: ./api
     command: nodemon index.js
     ports:
       - 8090:8090
     volumes:
-      - .:/app
+      - ./api:/app/api
     depends_on:
+      - rabbitmq
+      - elasticsearch
+    environment:
+      NODE_ENV: development
+    networks:
+      - elasticnetwork
+
+  consume-server:
+    container_name: consume-server
+    restart: always
+    build: ./consume-server
+    command: nodemon index.js
+    ports:
+      - 8091:8091
+    volumes:
+      - ./consume-server:/app/consume-server
+    depends_on:
+      - rabbitmq
       - elasticsearch
     environment:
       NODE_ENV: development

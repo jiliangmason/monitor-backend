@@ -1,6 +1,4 @@
 ## 日志监控server
-<br>
-
 ### 项目描述
 本项目基于koa2 + elasticsearch + kibana做日志信息的收集、存储、查询，运行在docker上，可以通过docker desktop查看各容器的情况
 
