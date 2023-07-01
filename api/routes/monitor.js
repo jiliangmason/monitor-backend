@@ -9,12 +9,26 @@ const router = new Router()
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 
+/**
+ * 等待rabbitmq返回es的写入结果
+ * @param {*} rabbitmq 
+ * @returns 
+ */
+export const waitForRely = async (rabbitmq) => {
+    return new Promise(resolve => {
+        rabbitmq.channel.consume(config.rabbitmq.replyQueueKey, msg => {
+            resolve(msg.content.toString())
+        }, { noAck: true })
+    })
+}
+
 router.prefix('/log')
 
 router.post('/', async (ctx, next) => {
     const body = ctx.request.body
     try {
         const userPhone = get(body, ['data', 'customTag'])
+        await rabbitmq.channel.assertQueue(config.rabbitmq.replyQueueKey, { durable: false })
         if (userPhone) {
             const data = body.data
             const { errorId, level, message, time, url } = data
@@ -32,15 +46,16 @@ router.post('/', async (ctx, next) => {
                 replyTo: config.rabbitmq.replyQueueKey,
                 correlationId: uuid()
             })
+            const msg = await waitForRely(rabbitmq)
             ctx.body = {
                 result: 1,
-                message: 'log success'
+                message: msg || 'default'
             }
             next()
         } else {
             ctx.body = {
                 result: 1,
-                message: 'success'
+                message: 'default'
             }
             next()
         }

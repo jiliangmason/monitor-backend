@@ -13,6 +13,15 @@ const replyHandler = async (message) => {
   console.log('开始监听queue的消息: [x]:', data)
   if (data) {
     await record.save(data)
+    channel.sendToQueue(message.properties.replyTo, Buffer.from('log success'.toString()),  {
+      correlationId: message.properties.correlationId
+    })
+    channel.ack(message)
+  } else {
+    channel.sendToQueue(message.properties.replyTo, Buffer.from('log failed'.toString()),  {
+      correlationId: message.properties.correlationId
+    })
+    channel.ack(message)
   }
 }
 
@@ -22,7 +31,7 @@ const consumeQueue = async () => {
     channel = await connection.createChannel()
   
     await channel.assertQueue(config.rabbitmq.dataQueueKey, { durable: false })
-    channel.consume(config.rabbitmq.dataQueueKey, replyHandler)
+    channel.consume(config.rabbitmq.dataQueueKey, replyHandler, { noAck: false })
   } catch(err) {
     console.error('rabbitmq_consumer异常', err)
   }
