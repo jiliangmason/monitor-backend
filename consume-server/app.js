@@ -13,8 +13,8 @@ const consumeQueue = async () => {
     connection = await amqplib.connect(config.rabbitmq.url)
     channel = await connection.createChannel()
   
-    await channel.assertQueue('test-queue', { durable: false })
-    channel.consume('test-queue', async (message) => {
+    await channel.assertQueue(config.rabbitmq.dataQueueKey, { durable: false })
+    channel.consume(config.rabbitmq.dataQueueKey, async (message) => {
       const data = JSON.parse(message.content.toString())
       console.log('开始监听queue的消息: [x]:', data)
       if (data) {

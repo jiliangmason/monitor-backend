@@ -10,7 +10,7 @@ class RabbitMQ {
 
     async connect() {
         try {
-            this.connection = await amqplib.connect(config.rabbitmq.url)
+            this.connection = await amqplib.connect(this.url)
             this.channel = await this.connection.createChannel()
         } catch(err) {
             throw err

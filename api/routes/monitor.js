@@ -2,6 +2,7 @@ import Router from 'koa-router'
 import moment from 'moment'
 import { get } from 'lodash'
 import RabbitMQ from '../rabbitmq'
+import config from '../config'
 
 const router = new Router()
 const rabbitmq = new RabbitMQ()
@@ -28,7 +29,7 @@ router.post('/', async (ctx, next) => {
             }
             console.log('recv:', data, params)
             rabbitmq.connect().then(async () => {
-                await rabbitmq.send('test-queue', params)
+                await rabbitmq.send(config.rabbitmq.dataQueueKey, params)
             })
         }
         ctx.body = {

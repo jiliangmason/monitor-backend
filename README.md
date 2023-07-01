@@ -1,11 +1,15 @@
 ## 日志监控server
 ### 项目描述
-本项目基于koa2 + elasticsearch + kibana做日志信息的收集、存储、查询，运行在docker上，可以通过docker desktop查看各容器的情况
+本项目基于koa2 + rabbitmq + elasticsearch + kibana做日志信息的收集、存储、查询，运行在docker上，可以通过docker desktop查看各容器的情况
 
 ### 步骤
 #### 1、npm i
 #### 2、docker-compose up
 <br>
+
+### 访问rabbitmq
+#### 本地访问 localhost:15672
+#### mq采用了simple模式
 
 ### 检查es是否连接
 #### 本地访问 localhost:9200
