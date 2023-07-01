@@ -1,10 +1,10 @@
 import Router from 'koa-router'
 import moment from 'moment'
 import { get } from 'lodash'
-import RecordModel from '../model/record'
+import RabbitMQ from '../rabbitmq'
 
 const router = new Router()
-const record = new RecordModel()
+const rabbitmq = new RabbitMQ()
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 
@@ -27,7 +27,9 @@ router.post('/', async (ctx, next) => {
                 create_time: moment().format(DATE_FORMAT),
             }
             console.log('recv:', data, params)
-            await record.save(params)
+            rabbitmq.connect().then(async () => {
+                await rabbitmq.send('test-queue', params)
+            })
         }
         ctx.body = {
             result: 1,

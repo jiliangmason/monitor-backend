@@ -1,10 +1,29 @@
-import amqp from 'amqplib'
-import config from '../api/config'
 const Koa = require('koa')
 const app = new Koa()
+import amqplib from 'amqplib'
+import RecordModel from './model/record'
+import config from './config'
+
+let connection
+let channel
+const record = new RecordModel()
 
 const consumeQueue = async () => {
-  amqp.connect(config.rabbitmq.url)
+  try {
+    connection = await amqplib.connect(config.rabbitmq.url)
+    channel = await connection.createChannel()
+  
+    await channel.assertQueue('test-queue', { durable: false })
+    channel.consume('test-queue', async (message) => {
+      const data = JSON.parse(message.content.toString())
+      console.log('开始监听queue的消息: [x]:', data)
+      if (data) {
+        await record.save(data)
+      }
+    }, { noAck: true })
+  } catch(err) {
+    console.error('rabbitmq_consumer异常', err)
+  }
 }
 
 consumeQueue()

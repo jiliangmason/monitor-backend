@@ -14,9 +14,6 @@ const monitor = require('./routes/monitor')
 
 import errorHandleMiddle from './middleware/error'
 
-// error handler
-// onerror(app)
-
 // middlewares
 app.use(errorHandleMiddle())
 app.use(convert(cors({
