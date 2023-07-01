@@ -1,11 +1,11 @@
 import Router from 'koa-router'
 import moment from 'moment'
 import { get } from 'lodash'
-import RabbitMQ from '../rabbitmq'
+import uuid from 'node-uuid'
+import { rabbitmq } from '../rabbitmq'
 import config from '../config'
 
 const router = new Router()
-const rabbitmq = new RabbitMQ()
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 
@@ -27,14 +27,22 @@ router.post('/', async (ctx, next) => {
                 time: moment(time).format(DATE_FORMAT),
                 create_time: moment().format(DATE_FORMAT),
             }
-            console.log('recv:', data, params)
-            rabbitmq.connect().then(async () => {
-                await rabbitmq.send(config.rabbitmq.dataQueueKey, params)
+            console.log('log body:', data, params)
+            await rabbitmq.send(config.rabbitmq.dataQueueKey, params, {
+                replyTo: config.rabbitmq.replyQueueKey,
+                correlationId: uuid()
             })
-        }
-        ctx.body = {
-            result: 1,
-            message: 'success'
+            ctx.body = {
+                result: 1,
+                message: 'log success'
+            }
+            next()
+        } else {
+            ctx.body = {
+                result: 1,
+                message: 'success'
+            }
+            next()
         }
     } catch(err) {
         console.error(err)

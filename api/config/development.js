@@ -4,6 +4,7 @@ export default {
     },
     rabbitmq: {
         url: 'amqp://rabbitmq:5672',
-        dataQueueKey: 'data-queue'
+        dataQueueKey: 'data-queue',
+        replyQueueKey: 'reply-queue'
     }
 }

@@ -12,6 +12,11 @@ const users = require('./routes/users')
 const monitor = require('./routes/monitor')
 
 import errorHandleMiddle from './middleware/error'
+import { rabbitmq } from './rabbitmq'
+
+(async function() {
+  await rabbitmq.connect()
+})()
 
 // middlewares
 app.use(errorHandleMiddle())

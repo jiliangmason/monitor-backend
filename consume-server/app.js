@@ -8,19 +8,21 @@ let connection
 let channel
 const record = new RecordModel()
 
+const replyHandler = async (message) => {
+  const data = JSON.parse(message.content.toString())
+  console.log('开始监听queue的消息: [x]:', data)
+  if (data) {
+    await record.save(data)
+  }
+}
+
 const consumeQueue = async () => {
   try {
     connection = await amqplib.connect(config.rabbitmq.url)
     channel = await connection.createChannel()
   
     await channel.assertQueue(config.rabbitmq.dataQueueKey, { durable: false })
-    channel.consume(config.rabbitmq.dataQueueKey, async (message) => {
-      const data = JSON.parse(message.content.toString())
-      console.log('开始监听queue的消息: [x]:', data)
-      if (data) {
-        await record.save(data)
-      }
-    }, { noAck: true })
+    channel.consume(config.rabbitmq.dataQueueKey, replyHandler)
   } catch(err) {
     console.error('rabbitmq_consumer异常', err)
   }
