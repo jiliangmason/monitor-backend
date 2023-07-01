@@ -20,3 +20,17 @@ mq采用了simple模式 其中，data-queue队列负责发送业务上报数据�
 ### 访问kibana
 #### 本地访问 localhost:5601
 
+### 测试
+本地可以调用post接口localhost:8090/log来测试，其中request body类似如下所示：
+```
+{
+    "type": "LOG",
+    "level": "error",
+    "message": "Cannot set properties of undefined",
+    "name": "log name",
+    "customTag": "12345678",
+    "time": 1687339979452,
+    "url": "https://xxx",
+    "errorId": -1504485888
+}
+```
