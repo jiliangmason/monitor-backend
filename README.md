@@ -8,8 +8,9 @@
 <br>
 
 ### 访问rabbitmq
-#### 本地访问 localhost:15672
-#### mq采用了simple模式
+本地访问 localhost:15672
+<br>
+mq采用了simple模式 其中，data-queue队列负责发送业务上报数据；reply-queue队列负责发送响应返回
 
 ### 检查es是否连接
 #### 本地访问 localhost:9200
